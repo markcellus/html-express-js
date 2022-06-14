@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   git: {
     commitMessage: '${version}',
     tagName: 'v${version}',
