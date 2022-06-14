@@ -1,0 +1,44 @@
+{
+  "name": "lit-express",
+  "version": "0.0.1",
+  "description": "A template-literal engine implementation to render Lit views when using Express",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write '**/*'",
+    "test": "prettier --check '**/*'",
+    "start": "node ./example/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markcellus/lit-express.git"
+  },
+  "keywords": [
+    "lit",
+    "express",
+    "views",
+    "template",
+    "engine"
+  ],
+  "author": "Mark",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markcellus/lit-express/issues"
+  },
+  "homepage": "https://github.com/markcellus/lit-express#readme",
+  "peerDependencies": {
+    "@lit-labs/ssr": "^2.2.0"
+  },
+  "dependencies": {
+    "decomment": "^0.9.5",
+    "glob": "^8.0.3",
+    "he": "^1.2.0"
+  },
+  "devDependencies": {
+    "chokidar": "^3.5.3",
+    "express": "^4.18.1",
+    "lit": "^2.2.5",
+    "prettier": "^2.7.0",
+    "reload": "^3.2.0"
+  }
+}
