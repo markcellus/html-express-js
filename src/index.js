@@ -111,6 +111,9 @@ class LitExpress {
         await stat(`${viewsDir}${path}.js`); // check if file exists
         await this.renderHtmlFileResponse(path, res);
       } catch (e) {
+        if (e.code !== 'ENOENT') {
+          throw e;
+        }
         res.status(404);
         const [, notFoundViewRelativePath] = notFoundView.split(viewsDir);
         await this.renderHtmlFileResponse(notFoundViewRelativePath, res);
