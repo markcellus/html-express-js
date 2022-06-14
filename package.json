@@ -1,6 +1,6 @@
 {
   "name": "lit-express",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A template-literal engine implementation to render Lit views when using Express",
   "main": "src/index.js",
   "type": "module",
