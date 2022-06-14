@@ -19,10 +19,11 @@ class LitExpress {
    * @param {string} [options.notFoundView] - The 404 view to fall back to when no view exists (defaults to 404/index.js inside of viewsDir)
    */
   constructor(options = {}) {
+    const viewsDir = options.viewsDir || `${__dirname}/public`;
     this.options = {
-      viewsDir: `${__dirname}/public`,
+      viewsDir,
       includesDir: `${__dirname}/app/includes`,
-      notFoundView: `${this.viewsDir}/404/index.js`,
+      notFoundView: `${viewsDir}/404/index`,
       ...options,
     };
     return this;
@@ -51,30 +52,28 @@ class LitExpress {
   }
 
   /**
-   * Renders an HTML file and adds all includes to state object.
-   * @param {string} path - The path to html file
+   * Renders a Lit JS HTML file and adds all includes to state object.
+   * @param {string} relativePath - The path to html file (without extension) relative to the viewsDir option
    * @param {object} [data]
    * @returns {string} HTML with includes available (appended to state)
    */
-  async renderHtmlFile(path, data = {}) {
+  async renderHtmlFile(relativePath, data = {}) {
     const state = {
       includes: {},
     };
+    const { viewsDir, includesDir } = this.options;
+    const filePath = `${viewsDir}/${relativePath}`;
 
-    const includeFilePaths = await glob(`${this.options.includesDir}/*.js`);
-    for await (const path of includeFilePaths) {
-      const key = basename(path, '.js');
+    const includeFilePaths = await glob(`${includesDir}/*.js`);
+    for await (const includePath of includeFilePaths) {
+      const key = basename(includePath, '.js');
       state.includes[key] = await this.#renderHtmlFileTemplate(
-        path,
+        includePath,
         data,
         state
       );
     }
-    return await this.#renderHtmlFileTemplate(
-      `${this.options.viewsDir}/${path}.js`,
-      data,
-      state
-    );
+    return await this.#renderHtmlFileTemplate(`${filePath}.js`, data, state);
   }
 
   /**
@@ -82,12 +81,12 @@ class LitExpress {
    */
   get renderHtmlFileResponse() {
     /**
-     * @param {string} path - The path to html file
+     * @param {string} relativePath - The path to html file (without extension) relative to the viewsDir option
      * @param {Express.Response} res
      * @param {object} [data] - Data to render
      */
-    return async (path, res, data) => {
-      const html = await this.renderHtmlFile(path, data);
+    return async (relativePath, res, data) => {
+      const html = await this.renderHtmlFile(relativePath, data);
       const buffer = Buffer.from(html);
       res.set('Content-Type', 'text/html');
       res.send(buffer);
@@ -102,22 +101,20 @@ class LitExpress {
   get static() {
     return async (req, res, next) => {
       const { path: rawPath } = req;
+      const { viewsDir, notFoundView } = this.options;
       const fileExtension = extname(rawPath);
       if (fileExtension) {
         return next();
       }
       const path = rawPath === '/' ? '/index' : `${rawPath}/index`; // deal with homepage (/) as well
-
       try {
-        // check if file exists
-
-        await stat(`${this.options.viewsDir}${path}.js`);
+        await stat(`${viewsDir}${path}.js`); // check if file exists
+        await this.renderHtmlFileResponse(path, res);
       } catch (e) {
         res.status(404);
-        await this.renderHtmlFileResponse(this.options.notFoundView, res);
-        return;
+        const [, notFoundViewRelativePath] = notFoundView.split(viewsDir);
+        await this.renderHtmlFileResponse(notFoundViewRelativePath, res);
       }
-      await this.renderHtmlFileResponse(path, res);
     };
   }
 }

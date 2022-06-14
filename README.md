@@ -40,7 +40,7 @@ const __dirname = resolve();
 const litExpress = LitExpress({
   viewsDir: `${__dirname}/public`, // where all views reside
   includesDir: `${__dirname}/includes`, // where all includes reside
-  notFoundView: `${__dirname}/public/404/index.js`, // view to render when there is no index file
+  notFoundView: `${__dirname}/public/404/index`, // view to render when there is no index file
 });
 
 // render HTML in public/custom-page.js with data

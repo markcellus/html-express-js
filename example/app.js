@@ -9,7 +9,7 @@ const app = express();
 const litExpress = LitExpress({
   viewsDir: `${__dirname}/example/public`, // where all views reside
   includesDir: `${__dirname}/example/includes`, // where all includes reside
-  notFoundView: `${__dirname}/example/public/404/index.js`, // view to render when there is no index file
+  notFoundView: `${__dirname}/example/public/404/index`, // view to render when there is no index file
 });
 
 // render hello page with data
