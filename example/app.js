@@ -22,6 +22,6 @@ app.get('/hello', async function (req, res, next) {
 app.use(litExpress.static);
 
 // serve all other static files like CSS, images, etc
-app.use(express.static(`${__dirname}/example`));
+app.use(express.static(`${__dirname}/example/public`));
 
 export default app;
