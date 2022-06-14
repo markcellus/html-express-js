@@ -8,7 +8,7 @@
 ## Installation
 
 ```
-npm install lit-express @lit-labs/ssr
+npm install lit-express lit @lit-labs/ssr
 ```
 
 ## Basic Usage
