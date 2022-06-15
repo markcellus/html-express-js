@@ -8,48 +8,37 @@
 ## Installation
 
 ```
-npm install lit-express lit @lit-labs/ssr
+npm install lit-express lit-html @lit-labs/ssr
 ```
 
 ## Basic Usage
 
-```js
-// public/custom-page.js
-import { html } from 'lit';
-
-export const view = (data) => html`
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <title>${data.name}'s page</title>
-    </head>
-
-    <body>
-      Hello, ${data.name}!
-    </body>
-  </html>
-`;
-```
+The following shows at a high level how the package can be used as an Express template engine. See [example](/example) directory for all details of a working implementation.
 
 ```js
-import LitExpress from 'lit-express';
+import litExpress from 'lit-express';
 
 const app = express();
 const __dirname = resolve();
 
-const litExpress = LitExpress({
-  viewsDir: `${__dirname}/public`, // where all views reside
-  includesDir: `${__dirname}/includes`, // where all includes reside
-  notFoundView: `${__dirname}/public/404/index`, // view to render when there is no index file
-});
+// set up engine
+app.engine(
+  'js',
+  litExpress({
+    includesDir: 'includes', // where all includes reside
+    notFoundView: '404', // view to render (inside public directory) when there is no index file
+  })
+);
+// use engine
+app.set('view engine', 'js');
 
-// render HTML in public/custom-page.js with data
-app.get('/custom-page', async function (req, res, next) {
-  await litExpress.renderHtmlFileResponse('custom-page/index', res, {
+// set directory where all index.js pages are served
+app.set('views', `${__dirname}/public`);
+
+// render HTML in public/dashboard.js with data
+app.get('/', function (req, res, next) {
+  res.render('dashboard', {
     name: 'Bob',
   });
 });
-
-// must be BEFORE any other static file middleware
-app.use(litExpress.static);
 ```

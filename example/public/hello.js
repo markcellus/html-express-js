@@ -1,17 +1,17 @@
-import { html } from 'lit';
+import { html } from 'lit-html';
 
 export const view = (data, state) => html`
   <!DOCTYPE html>
   <html lang="en">
     <head>
       ${state.includes.head}
-      <title>Dashboard</title>
+      <title>Hello!</title>
     </head>
 
     <body>
-      <h1>This is the dashboard!</h1>
+      <h1>Hello, ${data.name}!</h1>
 
-      <p>Click <a href="/hello">here</a> to go hello route.</p>
+      <p>Click <a href="/">here</a> to go back to the dashboard.</p>
     </body>
   </html>
 `;
