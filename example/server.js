@@ -7,7 +7,7 @@ const port = 2222;
 // reload browser on file changes
 reload(app, { verbose: true })
   .then(function (reloadReturned) {
-    chokidar.watch('./src').on('all', (/*event, path*/) => {
+    chokidar.watch(['./src', './example']).on('all', (/*event, path*/) => {
       reloadReturned.reload();
     });
 
