@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html } from 'lit-html';
 
 export const view = (data, state) => html`
   <!DOCTYPE html>
