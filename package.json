@@ -1,7 +1,7 @@
 {
-  "name": "lit-express",
+  "name": "html-express-js",
   "version": "0.2.0",
-  "description": "A template-literal engine implementation to render Lit views when using Express",
+  "description": "An Express template engine to render HTML views using native JavaScript",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markcellus/lit-express.git"
+    "url": "git+https://github.com/markcellus/html-express-js.git"
   },
   "keywords": [
     "lit",
@@ -23,21 +23,15 @@
   "author": "Mark",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/markcellus/lit-express/issues"
+    "url": "https://github.com/markcellus/html-express-js/issues"
   },
-  "homepage": "https://github.com/markcellus/lit-express#readme",
-  "peerDependencies": {
-    "@lit-labs/ssr": "^2.2.0"
-  },
+  "homepage": "https://github.com/markcellus/html-express-js#readme",
   "dependencies": {
-    "decomment": "^0.9.5",
-    "glob": "^8.0.3",
-    "he": "^1.2.0"
+    "glob": "^8.0.3"
   },
   "devDependencies": {
     "chokidar": "^3.5.3",
     "express": "^4.18.1",
-    "lit-html": "^2.2.6",
     "prettier": "^2.7.0",
     "release-it": "^15.0.0",
     "reload": "^3.2.0"

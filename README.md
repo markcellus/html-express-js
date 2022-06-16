@@ -1,4 +1,4 @@
-# lit-express
+# html-express-js
 
 ## Features
 
@@ -8,15 +8,17 @@
 ## Installation
 
 ```
-npm install lit-express lit-html @lit-labs/ssr
+npm install html-express-js
 ```
 
 ## Basic Usage
 
 The following shows at a high level how the package can be used as an Express template engine. See [example](/example) directory for all details of a working implementation.
 
+Set up your Express app to use this engine:
+
 ```js
-import litExpress from 'lit-express';
+import htmlExpress from 'html-express-js';
 
 const app = express();
 const __dirname = resolve();
@@ -24,9 +26,8 @@ const __dirname = resolve();
 // set up engine
 app.engine(
   'js',
-  litExpress({
+  htmlExpress({
     includesDir: 'includes', // where all includes reside
-    notFoundView: '404', // view to render (inside public directory) when there is no index file
   })
 );
 // use engine
@@ -37,8 +38,44 @@ app.set('views', `${__dirname}/public`);
 
 // render HTML in public/dashboard.js with data
 app.get('/', function (req, res, next) {
-  res.render('dashboard', {
+  res.render('homepage', {
+    title: 'Awesome Homepage',
     name: 'Bob',
   });
 });
+```
+
+Then you can create the associated files:
+
+```js
+// public/includes/head.js
+import { html } from 'html-express-js';
+
+export const view = () => html`
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0"
+  />
+`;
+```
+
+```js
+// public/homepage.js
+import { html } from 'html-express-js';
+
+export const view = (data, state) => html`
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      ${state.includes.head}
+      <title>${data.title}</title>
+    </head>
+
+    <body>
+      <h1>This is the homepage</h1>
+    </body>
+  </html>
+`;
 ```

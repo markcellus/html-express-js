@@ -1,4 +1,4 @@
-import { html } from 'lit-html';
+import { html } from '../../../src/index.js';
 
 export const view = (/*data, state*/) => html`
   <meta charset="utf-8" />

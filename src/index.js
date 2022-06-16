@@ -1,9 +1,6 @@
 import { basename } from 'path';
-import { render } from '@lit-labs/ssr/lib/render-with-global-dom-shim.js';
 import { promisify } from 'util';
 import g from 'glob';
-import decomment from 'decomment';
-import he from 'he';
 
 const glob = promisify(g);
 
@@ -18,15 +15,12 @@ const glob = promisify(g);
  */
 async function renderHtmlFileTemplate(path, data, state) {
   const { view } = await import(path);
-  const templateResult = view(data, state);
-  const rendered = render(templateResult);
-  let rawHtml = '';
+  const rendered = view(data, state);
+  let html = '';
   for (const chunk of rendered) {
-    rawHtml += chunk;
+    html += chunk;
   }
-  const decommentedHTML = decomment(rawHtml); // remove extraneous lit-part syntax
-  const decodedHTML = he.decode(decommentedHTML);
-  return decodedHTML;
+  return html;
 }
 
 /**
@@ -56,6 +50,22 @@ async function renderHtmlFile(filePath, data = {}, options = {}) {
     );
   }
   return await renderHtmlFileTemplate(filePath, data, state);
+}
+
+/**
+ * Template literal that supports string interpolating in passed HTML.
+ * @param {*} strings
+ * @param  {...any} data
+ * @returns {string} - HTML string
+ */
+export function html(strings, ...data) {
+  let rawHtml = '';
+  for (const [i, str] of strings.entries()) {
+    const exp = data[i] || '';
+    rawHtml += str + exp;
+  }
+  const html = rawHtml.replace(/[\n\r]/g, '');
+  return html;
 }
 
 /**
