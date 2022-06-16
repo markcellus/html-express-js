@@ -2,7 +2,7 @@
 
 ## Features
 
-- Serves HTML documents using template literals + Lit
+- Serves HTML documents using template literals
 - Supports includes in served HTML documents
 
 ## Installation

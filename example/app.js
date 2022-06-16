@@ -1,6 +1,6 @@
 import express from 'express';
 import { resolve } from 'path';
-import litExpress from '../src/index.js';
+import htmlExpress from '../src/index.js';
 
 const __dirname = resolve();
 
@@ -8,7 +8,7 @@ const app = express();
 
 app.engine(
   'js',
-  litExpress({
+  htmlExpress({
     includesDir: 'includes',
     notFoundView: '404/index',
   })
