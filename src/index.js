@@ -68,12 +68,12 @@ export function html(strings, ...data) {
 /**
  * Returns a template engine view function.
  *
- * @param {object} opts
+ * @param {object} [opts]
  * @param {object} [opts.includesDir]
  * @param {object} [opts.notFoundView]
  * @returns {Function}
  */
-export default function (opts) {
+export default function (opts = {}) {
   return async (filePath, data, callback) => {
     const viewsDir = data.settings.views;
     const includePath = opts.includesDir || 'includes';
