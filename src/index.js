@@ -90,3 +90,41 @@ export default function (opts = {}) {
     return callback(null, html);
   };
 }
+
+/**
+ * Attempts to render index.js pages when requesting to
+ * directories and fallback to 404/index.js if doesnt exist.
+ *
+ * @param {object} [options]
+ * @param {object} [options.basename] - The filename (w/out extension) to use for each
+ *    index page in every directory. Defaults to `index`.
+ * @param {object} [options.notFoundView] - The path of a file relative to the views
+ *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
+ * @returns {function} - Middleware function
+ */
+export function staticIndexHandler(rawOptions = {}) {
+  const options = {
+    basename: rawOptions.basename || 'index',
+    notFoundView: rawOptions.notFoundView || '404/index',
+  };
+  return async function (req, res, next) {
+    const { path: rawPath } = req;
+    const fileExtension = extname(rawPath);
+    if (fileExtension) {
+      return next();
+    }
+    const sanitizedPath = rawPath.replace('/', ''); // remove beginning slash
+    const path = sanitizedPath ? `${sanitizedPath}/index` : 'index';
+    try {
+      const viewsDir = req.settings.views;
+      await stat(`${viewsDir}/${path}.js`); // check if file exists
+      res.render(path);
+    } catch (e) {
+      if (e.code !== 'ENOENT') {
+        throw e;
+      }
+      res.status(404);
+      res.render(options.notFoundView);
+    }
+  };
+}
