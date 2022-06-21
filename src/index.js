@@ -1,6 +1,7 @@
-import { basename } from 'path';
+import { basename, extname } from 'path';
 import { promisify } from 'util';
 import g from 'glob';
+import { stat } from 'fs/promises';
 
 const glob = promisify(g);
 
@@ -28,14 +29,14 @@ async function renderHtmlFileTemplate(path, data, state) {
  *
  * @param {string} filePath - The path to html file
  * @param {object} data - Data to be made available in view
- * @param {object} options - Options passed to express
+ * @param {object} instanceOptions - Options passed to original instantiation
  * @returns {string} HTML with includes available (appended to state)
  */
-async function renderHtmlFile(filePath, data = {}, options = {}) {
+async function renderHtmlFile(filePath, data = {}, instanceOptions = {}) {
   const state = {
     includes: {},
   };
-  const { includesDir } = options;
+  const { includesDir } = instanceOptions;
 
   const includeFilePaths = await glob(`${includesDir}/*.js`);
   for await (const includePath of includeFilePaths) {
@@ -66,11 +67,47 @@ export function html(strings, ...data) {
 }
 
 /**
+ * Attempts to render index.js pages when requesting to
+ * directories and fallback to 404/index.js if doesnt exist.
+ *
+ * @param {object} [options]
+ * @param {object} options.rootDir - The directory that houses any potential index files
+ * @param {object} [options.filename] - The filename (w/out extension) to use for each
+ *    index page in every directory. Defaults to `index`.
+ * @param {string} [options.notFoundView] - The path of a file relative to the views
+ *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
+ * @returns {function} - Middleware function
+ */
+export function staticIndexHandler(options = {}) {
+  const filename = options.filename || 'index';
+  const notFoundView = options.notFoundView || '404/index';
+
+  return async function (req, res, next) {
+    const { path: rawPath } = req;
+    const fileExtension = extname(rawPath);
+    if (fileExtension) {
+      return next();
+    }
+    const sanitizedPath = rawPath.replace('/', ''); // remove beginning slash
+    const path = sanitizedPath ? `${sanitizedPath}/${filename}` : filename;
+    try {
+      await stat(`${options.rootDir}/${path}.js`); // check if file exists
+      res.render(path);
+    } catch (e) {
+      if (e.code !== 'ENOENT') {
+        throw e;
+      }
+      res.status(404);
+      res.render(notFoundView);
+    }
+  };
+}
+
+/**
  * Returns a template engine view function.
  *
  * @param {object} [opts]
  * @param {object} [opts.includesDir]
- * @param {object} [opts.notFoundView]
  * @returns {Function}
  */
 export default function (opts = {}) {
@@ -88,43 +125,5 @@ export default function (opts = {}) {
 
     const html = await renderHtmlFile(filePath, data, sanitizedOptions);
     return callback(null, html);
-  };
-}
-
-/**
- * Attempts to render index.js pages when requesting to
- * directories and fallback to 404/index.js if doesnt exist.
- *
- * @param {object} [options]
- * @param {object} [options.basename] - The filename (w/out extension) to use for each
- *    index page in every directory. Defaults to `index`.
- * @param {object} [options.notFoundView] - The path of a file relative to the views
- *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
- * @returns {function} - Middleware function
- */
-export function staticIndexHandler(rawOptions = {}) {
-  const options = {
-    basename: rawOptions.basename || 'index',
-    notFoundView: rawOptions.notFoundView || '404/index',
-  };
-  return async function (req, res, next) {
-    const { path: rawPath } = req;
-    const fileExtension = extname(rawPath);
-    if (fileExtension) {
-      return next();
-    }
-    const sanitizedPath = rawPath.replace('/', ''); // remove beginning slash
-    const path = sanitizedPath ? `${sanitizedPath}/index` : 'index';
-    try {
-      const viewsDir = req.settings.views;
-      await stat(`${viewsDir}/${path}.js`); // check if file exists
-      res.render(path);
-    } catch (e) {
-      if (e.code !== 'ENOENT') {
-        throw e;
-      }
-      res.status(404);
-      res.render(options.notFoundView);
-    }
   };
 }

@@ -1,4 +1,4 @@
-import { html } from '../../src/index.js';
+import { html } from '../../../src/index.js';
 
 export const view = (data, state) => html`
   <!DOCTYPE html>
