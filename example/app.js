@@ -28,7 +28,7 @@ app.get('/hello', async function (req, res) {
 // Automatically serve any index.js file as HTML in the public directory
 app.use(
   staticIndexHandler({
-    rootDir: `${__dirname}/example/public`,
+    viewsDir: `${__dirname}/example/public`,
     notFoundView: '404/index',
   })
 );

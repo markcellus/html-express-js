@@ -43,6 +43,15 @@ app.get('/', function (req, res, next) {
     name: 'Bob',
   });
 });
+
+// OPTIONALLY: route all GET requests to directories
+// to their associated static index.js views in the public directory
+// and, if not found, route to the 404/index.js view
+  staticIndexHandler({
+    viewsDir: `${__dirname}/public`, // root views directory to serve all index.js files
+    notFoundView: '404/index', // relative to viewsDir above
+  })
+);
 ```
 
 Then you can create the associated files:

@@ -71,7 +71,7 @@ export function html(strings, ...data) {
  * directories and fallback to 404/index.js if doesnt exist.
  *
  * @param {object} [options]
- * @param {object} options.rootDir - The directory that houses any potential index files
+ * @param {object} options.viewsDir - The directory that houses any potential index files
  * @param {object} [options.filename] - The filename (w/out extension) to use for each
  *    index page in every directory. Defaults to `index`.
  * @param {string} [options.notFoundView] - The path of a file relative to the views
@@ -91,7 +91,7 @@ export function staticIndexHandler(options = {}) {
     const sanitizedPath = rawPath.replace('/', ''); // remove beginning slash
     const path = sanitizedPath ? `${sanitizedPath}/${filename}` : filename;
     try {
-      await stat(`${options.rootDir}/${path}.js`); // check if file exists
+      await stat(`${options.viewsDir}/${path}.js`); // check if file exists
       res.render(path);
     } catch (e) {
       if (e.code !== 'ENOENT') {
