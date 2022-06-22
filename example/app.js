@@ -29,7 +29,7 @@ app.get('/hello', async function (req, res) {
 app.use(
   staticIndexHandler({
     viewsDir: `${__dirname}/example/public`,
-    notFoundView: '404/index',
+    notFoundView: '404', // OPTIONAL: defaults to `404/index`
   })
 );
 

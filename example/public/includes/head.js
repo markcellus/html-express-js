@@ -9,4 +9,7 @@ export const view = (/*data, state*/) => html`
   />
 
   <link rel="stylesheet" href="/main.css" />
+
+  <!-- For HMR! -->
+  <script src="/reload/reload.js"></script>
 `;
