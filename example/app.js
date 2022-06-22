@@ -1,6 +1,6 @@
 import express from 'express';
 import { resolve } from 'path';
-import htmlExpress from '../src/index.js';
+import htmlExpress, { staticIndexHandler } from '../src/index.js';
 
 const __dirname = resolve();
 
@@ -10,16 +10,14 @@ app.engine(
   'js',
   htmlExpress({
     includesDir: 'includes',
-    notFoundView: '404/index',
   })
 );
 
 app.set('view engine', 'js');
 app.set('views', `${__dirname}/example/public`);
 
-app.get('/', async function (req, res) {
-  res.render('dashboard');
-});
+// serve all other static files like CSS, images, etc
+app.use(express.static(`${__dirname}/example/public`));
 
 app.get('/hello', async function (req, res) {
   res.render('hello', {
@@ -27,7 +25,12 @@ app.get('/hello', async function (req, res) {
   });
 });
 
-// serve all other static files like CSS, images, etc
-app.use(express.static(`${__dirname}/example/public`));
+// Automatically serve any index.js file as HTML in the public directory
+app.use(
+  staticIndexHandler({
+    viewsDir: `${__dirname}/example/public`,
+    notFoundView: '404', // OPTIONAL: defaults to `404/index`
+  })
+);
 
 export default app;

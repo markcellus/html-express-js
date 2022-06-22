@@ -18,7 +18,7 @@ The following shows at a high level how the package can be used as an Express te
 Set up your Express app to use this engine:
 
 ```js
-import htmlExpress from 'html-express-js';
+import htmlExpress, { staticIndexHandler } from 'html-express-js';
 
 const app = express();
 const __dirname = resolve();
@@ -43,6 +43,16 @@ app.get('/', function (req, res, next) {
     name: 'Bob',
   });
 });
+
+// OPTIONALLY: route all GET requests to directories
+// to their associated static index.js views in the public directory
+// and, if not found, route to the 404/index.js view
+app.use(
+  staticIndexHandler({
+    viewsDir: `${__dirname}/public`, // root views directory to serve all index.js files
+    notFoundView: '404/index', // relative to viewsDir above
+  })
+);
 ```
 
 Then you can create the associated files:
