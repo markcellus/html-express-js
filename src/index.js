@@ -115,9 +115,6 @@ export default function (opts = {}) {
     const sanitizedOptions = {
       viewsDir,
       includesDir: `${viewsDir}/${includePath}`,
-      notFoundView: opts.notFoundView
-        ? `${viewsDir}/${opts.notFoundView}.js`
-        : `${viewsDir}/404/index.js`,
     };
 
     const html = await renderHtmlFile(filePath, data, sanitizedOptions);
