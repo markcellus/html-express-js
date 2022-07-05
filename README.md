@@ -1,3 +1,7 @@
+![build](https://img.shields.io/travis/markcellus/html-express-js)
+![npm](https://img.shields.io/npm/v/html-express-js)
+![node](https://img.shields.io/node/v/html-express-js)
+
 # html-express-js
 
 ## Features
