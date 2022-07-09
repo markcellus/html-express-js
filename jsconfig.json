@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "maxNodeModuleJsDepth": 1,
+    "moduleResolution": "nodenext",
+    "module": "es2022",
+    "target": "es2022"
+  }
+}
