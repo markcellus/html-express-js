@@ -12,7 +12,7 @@ const glob = promisify(g);
  * @param {string} path - The path to html file
  * @param {object} [data]
  * @param {object} [state] - Page-level attributes
- * @returns {string} HTML
+ * @returns {Promise<string>} HTML
  */
 async function renderHtmlFileTemplate(path, data, state) {
   const { view } = await import(path);
@@ -30,7 +30,7 @@ async function renderHtmlFileTemplate(path, data, state) {
  * @param {string} filePath - The path to html file
  * @param {object} data - Data to be made available in view
  * @param {object} instanceOptions - Options passed to original instantiation
- * @returns {string} HTML with includes available (appended to state)
+ * @returns {Promise<string>} HTML with includes available (appended to state)
  */
 async function renderHtmlFile(filePath, data = {}, instanceOptions = {}) {
   const state = {
@@ -74,9 +74,9 @@ export function html(strings, ...data) {
  * @param {object} options.viewsDir - The directory that houses any potential index files
  * @param {string} [options.notFoundView] - The path of a file relative to the views
  *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
- * @returns {function} - Middleware function
+ * @returns {import('express').RequestHandler} - Middleware function
  */
-export function staticIndexHandler(options = {}) {
+export function staticIndexHandler(options) {
   const notFoundView = options.notFoundView || `404/index`;
 
   return async function (req, res, next) {
@@ -105,7 +105,7 @@ export function staticIndexHandler(options = {}) {
  *
  * @param {object} [opts]
  * @param {object} [opts.includesDir]
- * @returns {Function}
+ * @returns {(path: string, options: object, callback: (e: any, rendered?: string) => void) => void}
  */
 export default function (opts = {}) {
   return async (filePath, data, callback) => {
