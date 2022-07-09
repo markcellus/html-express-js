@@ -4,6 +4,9 @@
   "description": "An Express template engine to render HTML views using native JavaScript",
   "main": "src/index.js",
   "type": "module",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
     "format": "prettier --write '**/*'",
     "test": "prettier --check '**/*'",
