@@ -40,7 +40,7 @@ app.set('view engine', 'js');
 // set directory where all index.js pages are served
 app.set('views', `${__dirname}/public`);
 
-// render HTML in public/dashboard.js with data
+// render HTML in public/homepage.js with data
 app.get('/', function (req, res, next) {
   res.render('homepage', {
     title: 'Awesome Homepage',
