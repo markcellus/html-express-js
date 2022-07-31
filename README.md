@@ -88,7 +88,7 @@ export const view = (data, state) => html`
     </head>
 
     <body>
-      <h1>This is the homepage</h1>
+      <h1>This is the homepage for ${data.name}</h1>
     </body>
   </html>
 `;
