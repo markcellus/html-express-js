@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/markcellus/html-express-js#readme",
   "dependencies": {
-    "glob": "^8.0.3"
+    "glob": "^9.1.0"
   },
   "devDependencies": {
     "chokidar": "^3.5.3",
