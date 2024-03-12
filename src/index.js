@@ -1,9 +1,6 @@
 import { basename, extname } from 'path';
-import { promisify } from 'util';
-import g from 'glob';
+import { glob } from 'glob';
 import { stat } from 'fs/promises';
-
-const glob = promisify(g);
 
 /**
  * Renders an HTML template in a file.
