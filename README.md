@@ -32,7 +32,7 @@ app.engine(
   'js',
   htmlExpress({
     includesDir: 'includes', // where all includes reside
-  })
+  }),
 );
 // use engine
 app.set('view engine', 'js');
@@ -55,7 +55,7 @@ app.use(
   staticIndexHandler({
     viewsDir: `${__dirname}/public`, // root views directory to serve all index.js files
     notFoundView: '404/index', // relative to viewsDir above
-  })
+  }),
 );
 ```
 
@@ -80,7 +80,7 @@ export const view = () => html`
 import { html } from 'html-express-js';
 
 export const view = (data, state) => html`
-  <!DOCTYPE html>
+  <!doctype html>
   <html lang="en">
     <head>
       ${state.includes.head}

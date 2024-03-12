@@ -44,7 +44,7 @@ async function renderHtmlFile(filePath, data = {}, instanceOptions = {}) {
     state.includes[key] = await renderHtmlFileTemplate(
       includePath,
       data,
-      state
+      state,
     );
   }
   return await renderHtmlFileTemplate(filePath, data, state);

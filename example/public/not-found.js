@@ -1,7 +1,7 @@
 import { html } from '../../src/index.js';
 
 export const view = (data, state) => html`
-  <!DOCTYPE html>
+  <!doctype html>
   <html lang="en">
     <head>
       ${state.includes.head}

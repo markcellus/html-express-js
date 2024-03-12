@@ -10,7 +10,7 @@ app.engine(
   'js',
   htmlExpress({
     includesDir: 'includes',
-  })
+  }),
 );
 
 app.set('view engine', 'js');
@@ -30,7 +30,7 @@ app.use(
   staticIndexHandler({
     viewsDir: `${__dirname}/example/public`,
     notFoundView: 'not-found', // OPTIONAL: defaults to `404/index`
-  })
+  }),
 );
 
 export default app;
