@@ -7,7 +7,8 @@
 ## Features
 
 - Serves HTML documents using template literals
-- Supports includes in served HTML documents
+- Supports includes in HTML documents
+- Allows shared global state throughout templates
 
 ## Installation
 
@@ -17,28 +18,32 @@ npm install html-express-js
 
 ## Basic Usage
 
-The following shows at a high level how the package can be used as an Express template engine. See [example](/example) directory for all details of a working implementation.
+The following is a high level example of how the package can be used as an Express template engine. See [example](/example) directory for all details of a working implementation.
 
 Set up your Express app to use this engine:
 
 ```js
-import htmlExpress, { staticIndexHandler } from 'html-express-js';
+import htmlExpress from 'html-express-js';
 
 const app = express();
 const __dirname = resolve();
 
+const viewsDir = `${__dirname}/public`;
+
+const { engine, staticIndexHandler } = htmlExpress({
+  viewsDir, // root views directory to serve all index.js files
+  includesDir: `${viewsDir}/includes`, // OPTIONAL: where all includes reside
+  notFoundView: '404/index', // OPTIONAL: relative to viewsDir above
+});
+
 // set up engine
-app.engine(
-  'js',
-  htmlExpress({
-    includesDir: 'includes', // where all includes reside
-  }),
-);
+app.engine('js', engine);
+
 // use engine
 app.set('view engine', 'js');
 
 // set directory where all index.js pages are served
-app.set('views', `${__dirname}/public`);
+app.set('views', viewsDir);
 
 // render HTML in public/homepage.js with data
 app.get('/', function (req, res, next) {
@@ -51,12 +56,7 @@ app.get('/', function (req, res, next) {
 // OPTIONALLY: route all GET requests to directories
 // to their associated static index.js views in the public directory
 // and, if not found, route to the 404/index.js view
-app.use(
-  staticIndexHandler({
-    viewsDir: `${__dirname}/public`, // root views directory to serve all index.js files
-    notFoundView: '404/index', // relative to viewsDir above
-  }),
-);
+app.use(staticIndexHandler());
 ```
 
 Then you can create the associated files:
@@ -92,6 +92,65 @@ export const view = (data, state) => html`
     </body>
   </html>
 `;
+```
+
+## Advanced usage
+
+### Injecting and using state based on a request
+
+The following shows an example of showing a logged out state based on the cookie on a request.
+
+```js
+import htmlExpress from 'html-express-js';
+
+const app = express();
+const __dirname = resolve();
+
+const viewsDir = `${__dirname}/public`;
+
+const { engine, staticIndexHandler } = htmlExpress({
+  viewsDir,
+  /**
+   * Inject global state into all views based on cookie
+   */
+  buildRequestState: (req) => {
+    if (req.cookies['authed']) {
+      return {
+        loggedIn: true,
+      };
+    }
+  },
+});
+
+app.engine('js', engine);
+app.set('view engine', 'js');
+app.set('views', viewsDir);
+
+app.get('/', function (req, res, next) {
+  res.render('homepage');
+});
+```
+
+```js
+// public/homepage.js
+import { html } from 'html-express-js';
+
+export const view = (data, state) => {
+  const { loggedIn } = state;
+
+  return html`
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <title>${data.title}</title>
+      </head>
+
+      <body>
+        ${loggedIn ? `<a href="/logout">Logout</a>` : 'Not logged in'}
+      </body>
+    </html>
+  `;
+};
 ```
 
 ## Development
