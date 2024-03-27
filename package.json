@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "files": [
     "src/index.js",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/markcellus/html-express-js#readme",
   "dependencies": {
-    "glob": "^10.2.2"
+    "glob": "^10.3.10"
   },
   "devDependencies": {
     "@types/chai": "^4.3.13",
