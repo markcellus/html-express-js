@@ -1,0 +1,12 @@
+{
+  "files": ["src/index.js"],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "target": "es2022",
+    "declaration": true,
+    "outDir": "src"
+  }
+}
