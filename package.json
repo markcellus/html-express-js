@@ -8,8 +8,9 @@
     "node": ">=16"
   },
   "scripts": {
-    "format": "prettier --write '**/*'",
-    "test": "npm run type-check && prettier --check '**/*'",
+    "format": "prettier --write '**/*' --log-level=warn",
+    "format-check": "prettier --check '**/*' --ignore-unknown",
+    "test": "npm run type-check && npm run format-check",
     "start": "node ./example/server.js",
     "type-check": "tsc -p ./jsconfig.json",
     "prepare": "husky install"
