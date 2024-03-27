@@ -107,9 +107,3 @@ Run tests
 ```bash
 npm test
 ```
-
-Generate type declaration file at src/index.d.ts
-
-```bash
-npm run build
-```

@@ -7,16 +7,19 @@
   "engines": {
     "node": ">=16"
   },
+  "files": [
+    "src/index.js",
+    "src/index.d.ts"
+  ],
   "scripts": {
     "format": "prettier --write '**/*' --log-level=warn",
     "format-check": "prettier --check '**/*' --ignore-unknown",
     "test": "npm run test:src && npm run type-check && npm run format-check",
     "test:src": "mocha src/**/*.tests.js",
     "start": "node ./example/server.js",
-    "type-check": "npm run build && tsc -p tsconfig.json",
-    "build": "tsc -p tsconfig.build.json",
+    "type-check": "tsc -p tsconfig.json",
     "prepare": "husky install",
-    "preversion": "npm run build"
+    "preversion": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
