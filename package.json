@@ -19,7 +19,7 @@
     "start": "node ./example/server.js",
     "type-check": "tsc -p tsconfig.json",
     "prepare": "husky install",
-    "preversion": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
