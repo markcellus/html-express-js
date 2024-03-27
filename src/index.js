@@ -163,13 +163,9 @@ export default function (opts) {
       });
     },
     engine: async (filePath, data, callback) => {
-      const html = await renderHtmlFile(
-        filePath,
-        {},
-        {
-          includesDir,
-        },
-      );
+      const html = await renderHtmlFile(filePath, data, {
+        includesDir,
+      });
       return callback(null, html);
     },
   };
