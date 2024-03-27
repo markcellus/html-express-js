@@ -9,6 +9,6 @@
   },
   "hooks": {
     "before:init": ["npm test"],
-    "after:bump": "npm run build"
+    "before:bump": "npm run build"
   }
 }
