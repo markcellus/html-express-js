@@ -9,6 +9,7 @@
   },
   "hooks": {
     "before:init": ["npm test"],
-    "before:bump": "npm run build"
+    "before:bump": "npm run build",
+    "after:npm:release": "rm src/index.d.ts"
   }
 }
