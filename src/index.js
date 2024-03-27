@@ -48,7 +48,9 @@ async function renderHtmlFile(filePath, data = {}, instanceOptions = {}) {
 }
 
 /**
- * Template literal that supports string interpolating in passed HTML.
+ * Template literal that supports string
+ * interpolating in passed HTML.
+ *
  * @param {*} strings
  * @param  {...any} data
  * @returns {string} - HTML string
