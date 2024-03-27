@@ -23,7 +23,7 @@ The following is a high level example of how the package can be used as an Expre
 Set up your Express app to use this engine:
 
 ```js
-import htmlExpress from 'html-express-js';
+import htmlExpress, { renderView } from 'html-express-js';
 
 const app = express();
 const __dirname = resolve();
@@ -47,7 +47,7 @@ app.set('views', viewsDir);
 
 // render HTML in public/homepage.js with data
 app.get('/', function (req, res, next) {
-  res.render('homepage', {
+  renderView('homepage', req, res, {
     title: 'Awesome Homepage',
     name: 'Bob',
   });
@@ -101,7 +101,7 @@ export const view = (data, state) => html`
 The following shows an example of showing a logged out state based on the cookie on a request.
 
 ```js
-import htmlExpress from 'html-express-js';
+import htmlExpress, { renderView } from 'html-express-js';
 
 const app = express();
 const __dirname = resolve();
@@ -127,7 +127,7 @@ app.set('view engine', 'js');
 app.set('views', viewsDir);
 
 app.get('/', function (req, res, next) {
-  res.render('homepage');
+  renderView('homepage', req, res);
 });
 ```
 

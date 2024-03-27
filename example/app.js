@@ -1,6 +1,6 @@
 import express from 'express';
 import { resolve } from 'path';
-import htmlExpress from '../src/index.js';
+import htmlExpress, { renderView } from '../src/index.js';
 
 const __dirname = resolve();
 
@@ -22,7 +22,7 @@ app.set('views', viewsDir);
 app.use(express.static(viewsDir));
 
 app.get('/hello', async function (req, res) {
-  res.render('hello', {
+  renderView('hello/index', req, res, {
     name: 'world',
   });
 });

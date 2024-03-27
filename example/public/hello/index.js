@@ -1,5 +1,8 @@
 import { html } from '../../../src/index.js';
 
+/**
+ * @type {import('../../../src/index.js').HTMLExpressView}
+ */
 export const view = (data, state) => html`
   <!doctype html>
   <html lang="en">
