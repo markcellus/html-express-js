@@ -93,3 +93,23 @@ export const view = (data, state) => html`
   </html>
 `;
 ```
+
+## Development
+
+Run site in examples directory
+
+```bash
+npm start
+```
+
+Run tests
+
+```bash
+npm test
+```
+
+Generate type declaration file at src/index.d.ts
+
+```bash
+npm run build
+```
