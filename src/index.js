@@ -3,6 +3,23 @@ import { glob } from 'glob';
 import { stat } from 'fs/promises';
 
 /**
+ * @callback HTMLExpressBuildStateHandler
+ * @param {import('express').Request} req
+ * @returns {Record<string, any>}
+ */
+
+/**
+ * @typedef {object} HTMLExpressOptions
+ * @property {string} viewsDir - The directory that houses any potential index files
+ * @property {string} [includesDir] - The directory that houses all of the includes
+ * that will be available on the includes property of each static page.
+ * @property {string} [notFoundView] - The path of a file relative to the views
+ *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
+ * @property {HTMLExpressBuildStateHandler} [buildRequestState] - A callback function that allows for
+ * building a state object from request information, that will be merged with default state and made available to all views
+ */
+
+/**
  * Renders an HTML template in a file.
  *
  * @private
@@ -26,14 +43,15 @@ async function renderHtmlFileTemplate(path, data, state) {
  *
  * @param {string} filePath - The path to html file
  * @param {object} data - Data to be made available in view
- * @param {object} instanceOptions - Options passed to original instantiation
+ * @param {object} options - Options passed to original instantiation
+ * @param {HTMLExpressOptions['includesDir']} options.includesDir
+ * @param {Record<string, any>} [options.state]
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
-async function renderHtmlFile(filePath, data = {}, instanceOptions = {}) {
-  const state = {
-    includes: {},
-  };
-  const { includesDir } = instanceOptions;
+async function renderHtmlFile(filePath, data = {}, options) {
+  const { includesDir } = options || {};
+  const state = options.state || {};
+  state.includes = {};
 
   const includeFilePaths = await glob(`${includesDir}/*.js`);
   for await (const includePath of includeFilePaths) {
@@ -66,17 +84,19 @@ export function html(strings, ...data) {
 }
 
 /**
+ * @callback HTMLExpressStaticIndexHandler
+ * @param {HTMLExpressOptions} [options]
+ * @returns {import('express').RequestHandler}
+ */
+
+/**
  * Attempts to render index.js pages when requesting to
  * directories and fallback to 404/index.js if doesnt exist.
  *
- * @param {object} [options]
- * @param {string} options.viewsDir - The directory that houses any potential index files
- * @param {string} [options.notFoundView] - The path of a file relative to the views
- *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
- * @returns {import('express').RequestHandler} - Middleware function
+ * @type {HTMLExpressStaticIndexHandler}
  */
-export function staticIndexHandler(options) {
-  const notFoundView = options.notFoundView || `404/index`;
+function staticIndexHandler(options) {
+  const { viewsDir, notFoundView, includesDir, buildRequestState } = options;
 
   return async function (req, res, next) {
     const { path: rawPath } = req;
@@ -84,39 +104,74 @@ export function staticIndexHandler(options) {
     if (fileExtension) {
       return next();
     }
-    const sanitizedPath = rawPath.replace('/', ''); // remove beginning slash
-    const path = sanitizedPath ? `${sanitizedPath}/index` : 'index';
+    const pathWithoutPrecedingSlash = rawPath.replace('/', ''); // remove beginning slash
+    const path = pathWithoutPrecedingSlash
+      ? `${pathWithoutPrecedingSlash}/index`
+      : 'index';
+
+    const requestState = buildRequestState ? buildRequestState(req) : {};
+
+    const renderOptions = {
+      includesDir,
+      state: requestState,
+    };
+    res.setHeader('Content-Type', 'text/html');
     try {
-      await stat(`${options.viewsDir}/${path}.js`); // check if file exists
-      res.render(path);
+      const absoluteFilePath = `${viewsDir}/${path}.js`;
+      await stat(absoluteFilePath); // check if file exists
+      const html = await renderHtmlFile(absoluteFilePath, {}, renderOptions);
+      res.send(html);
     } catch (e) {
       if (e.code !== 'ENOENT') {
         throw e;
       }
+      const notFoundViewPath = notFoundView || `404/index`;
+      const notFoundAbsoluteFilePath = `${viewsDir}/${notFoundViewPath}.js`;
+      const html = await renderHtmlFile(
+        notFoundAbsoluteFilePath,
+        {},
+        renderOptions,
+      );
       res.status(404);
-      res.render(notFoundView);
+      res.send(html);
     }
   };
 }
 
 /**
- * Returns a template engine view function.
+ * Returns an object containing both static
+ * index handler and the template engine callback.
  *
- * @param {object} [opts]
- * @param {string} [opts.includesDir]
- * @returns {(path: string, options: object, callback: (e: any, rendered?: string) => void) => void}
+ * @param {HTMLExpressOptions} [opts]
+ * @returns {{
+ * staticIndexHandler: HTMLExpressStaticIndexHandler,
+ * engine: Parameters<import('express').Application['engine']>[1],
+ * }}
  */
-export default function (opts = {}) {
-  return async (filePath, data, callback) => {
-    const viewsDir = data.settings.views;
-    const includePath = opts.includesDir || 'includes';
-
-    const sanitizedOptions = {
-      viewsDir,
-      includesDir: `${viewsDir}/${includePath}`,
-    };
-
-    const html = await renderHtmlFile(filePath, data, sanitizedOptions);
-    return callback(null, html);
+export default function (opts) {
+  const { buildRequestState, notFoundView, viewsDir } = opts;
+  const includesDir = opts.includesDir
+    ? opts.includesDir
+    : `${viewsDir}/includes`;
+  return {
+    staticIndexHandler: (options) => {
+      return staticIndexHandler({
+        includesDir,
+        viewsDir,
+        notFoundView,
+        buildRequestState,
+        ...options,
+      });
+    },
+    engine: async (filePath, data, callback) => {
+      const html = await renderHtmlFile(
+        filePath,
+        {},
+        {
+          includesDir,
+        },
+      );
+      return callback(null, html);
+    },
   };
 }
