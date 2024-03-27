@@ -12,8 +12,8 @@
     "format-check": "prettier --check '**/*' --ignore-unknown",
     "test": "npm run type-check && npm run format-check",
     "start": "node ./example/server.js",
-    "type-check": "tsc --noEmit",
-    "build": "tsc --emitDeclarationOnly",
+    "type-check": "npm run build && tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "prepare": "husky install",
     "preversion": "npm run build"
   },

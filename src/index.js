@@ -68,7 +68,7 @@ export function html(strings, ...data) {
  * directories and fallback to 404/index.js if doesnt exist.
  *
  * @param {object} [options]
- * @param {object} options.viewsDir - The directory that houses any potential index files
+ * @param {string} options.viewsDir - The directory that houses any potential index files
  * @param {string} [options.notFoundView] - The path of a file relative to the views
  *    directory that should be served as 404 when no matching index page exists. Defaults to `404/index`.
  * @returns {import('express').RequestHandler} - Middleware function
@@ -101,7 +101,7 @@ export function staticIndexHandler(options) {
  * Returns a template engine view function.
  *
  * @param {object} [opts]
- * @param {object} [opts.includesDir]
+ * @param {string} [opts.includesDir]
  * @returns {(path: string, options: object, callback: (e: any, rendered?: string) => void) => void}
  */
 export default function (opts = {}) {

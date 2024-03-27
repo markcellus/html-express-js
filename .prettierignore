@@ -6,3 +6,4 @@ LICENSE
 .npmrc
 .prettierignore
 .nvmrc
+src/index.d.ts
