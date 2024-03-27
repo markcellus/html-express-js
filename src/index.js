@@ -79,8 +79,7 @@ export function html(strings, ...data) {
     const exp = data[i] || '';
     rawHtml += str + exp;
   }
-  const html = rawHtml.replace(/[\n\r]/g, '');
-  return html;
+  return rawHtml;
 }
 
 /**

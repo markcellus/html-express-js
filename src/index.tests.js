@@ -3,17 +3,17 @@ import { html } from './index.js';
 
 describe('index.js', () => {
   describe('html', () => {
-    it('removes carriage returns', () => {
-      const value = 'abc';
+    it('does NOT remove carriage returns', () => {
+      const value = `abc\r`;
       /* prettier-ignore */
-      const result = html`${value}\r`;
+      const result = html`${value}`;
       expect(result).to.equal(value);
     });
 
-    it('removes newlines', () => {
-      const value = 'abc';
+    it('does NOT remove newlines', () => {
+      const value = `abc\n`;
       /* prettier-ignore */
-      const result = html`${value}\n`;
+      const result = html`${value}`;
       expect(result).to.equal(value);
     });
   });
