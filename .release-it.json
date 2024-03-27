@@ -1,7 +1,8 @@
 {
   "git": {
     "commitMessage": "${version}",
-    "tagName": "v${version}"
+    "tagName": "v${version}",
+    "addUntrackedFiles": true
   },
   "github": {
     "release": true,
