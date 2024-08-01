@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/markcellus/html-express-js#readme",
   "dependencies": {
-    "glob": "^10.2.2"
+    "glob": "^11.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.13",
