@@ -42,7 +42,7 @@
     "glob": "^11.0.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.13",
+    "@types/chai": "^5.0.0",
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.6",
     "@types/reload": "^3.2.3",
