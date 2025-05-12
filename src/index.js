@@ -5,7 +5,7 @@ import { stat } from 'fs/promises';
 /**
  * @callback HTMLExpressBuildStateHandler
  * @param {import('express').Request} req
- * @returns {Record<string, any>}
+ * @returns {Promise<Record<string, any>>}
  */
 
 /**
@@ -82,7 +82,7 @@ async function renderFileTemplate(path, data, state) {
  * @returns {Promise<void>} HTML with includes available (appended to state)
  */
 export async function renderView(filePath, req, res, data = {}) {
-  const requestState = buildRequestState ? buildRequestState(req) : {};
+  const requestState = buildRequestState ? await buildRequestState(req) : {};
   const html = await buildViewHtml(filePath, data, requestState);
   res.send(html);
 }
