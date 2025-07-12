@@ -79,12 +79,13 @@ async function renderFileTemplate(path, data, state) {
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {Record<string, any>} [data]
- * @returns {Promise<void>} HTML with includes available (appended to state)
+ * @returns {Promise<string>} HTML with includes available (appended to state)
  */
 export async function renderView(filePath, req, res, data = {}) {
   const requestState = buildRequestState ? await buildRequestState(req) : {};
   const html = await buildViewHtml(filePath, data, requestState);
   res.send(html);
+  return html;
 }
 
 /**
