@@ -1,6 +1,6 @@
 {
   "name": "html-express-js",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "An Express template engine to render HTML views using native JavaScript",
   "main": "src/index.js",
   "type": "module",
