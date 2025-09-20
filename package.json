@@ -5,7 +5,19 @@
   "main": "src/index.js",
   "type": "module",
   "engines": {
-    "node": ">=22.19"
+    "node": ">=16"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.19",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": ">=10.9.3",
+      "onFail": "error"
+    }
   },
   "files": [
     "src/index.js",
