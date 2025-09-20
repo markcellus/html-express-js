@@ -128,8 +128,16 @@ export function html(strings, ...data) {
 }
 
 /**
+ * @callback HTMLExpressStaticAsyncRequestHandler
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {Promise<void>}
+ */
+
+/**
  * @callback HTMLExpressStaticIndexHandler
- * @returns {import('express').RequestHandler}
+ * @returns {HTMLExpressStaticAsyncRequestHandler}
  */
 
 /**
