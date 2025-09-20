@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "engines": {
-    "node": ">=16"
+    "node": ">=22.19"
   },
   "files": [
     "src/index.js",
