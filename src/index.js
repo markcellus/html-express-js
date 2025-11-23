@@ -73,6 +73,19 @@ async function renderFileTemplate(path, data, state) {
 }
 
 /**
+ * Generates HTML for the provided view and adds all includes to state object.
+ *
+ * @param {string} filePath - The path to html file
+ * @param {import('express').Request} req - The request to build the state from
+ * @param {Record<string, any>} [data] - Data provided to the view
+ * @returns {Promise<string>} HTML with includes available (appended to state)
+ */
+export async function buildStateViewHtml(filePath, req, data = {}) {
+  const requestState = buildRequestState ? await buildRequestState(req) : {};
+  return await buildViewHtml(filePath, data, requestState);
+}
+
+/**
  * Renders a JS HTML file and adds all includes to state object.
  *
  * @param {string} filePath - The path to html file
@@ -82,8 +95,7 @@ async function renderFileTemplate(path, data, state) {
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
 export async function renderView(filePath, req, res, data = {}) {
-  const requestState = buildRequestState ? await buildRequestState(req) : {};
-  const html = await buildViewHtml(filePath, data, requestState);
+  const html = await buildStateViewHtml(filePath, req, data);
   res.send(html);
   return html;
 }
@@ -96,7 +108,7 @@ export async function renderView(filePath, req, res, data = {}) {
  * @param {Record<string, any>} [customState]
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
-async function buildViewHtml(filePath, data = {}, customState = {}) {
+export async function buildViewHtml(filePath, data = {}, customState = {}) {
   /**
    * @type {Record<string, any>}
    */
