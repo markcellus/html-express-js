@@ -96,6 +96,7 @@ export async function buildStateViewHtml(filePath, req, data = {}) {
  */
 export async function renderView(filePath, req, res, data = {}) {
   const html = await buildStateViewHtml(filePath, req, data);
+  res.set('Content-Type', 'text/html');
   res.send(html);
   return html;
 }
