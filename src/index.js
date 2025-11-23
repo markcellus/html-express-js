@@ -54,7 +54,7 @@ let buildRequestState;
 let notFoundView = `404/index`;
 
 /**
- * Renders an HTML template in a file.
+ * Generates the HTML for a view function inside of the passed file.
  *
  * @private
  * @param {string} path - The path to html file
@@ -62,7 +62,7 @@ let notFoundView = `404/index`;
  * @param {object} [state] - Page-level attributes
  * @returns {Promise<string>} HTML
  */
-async function renderFileTemplate(path, data, state) {
+async function buildView(path, data, state) {
   const { view } = await import(path);
   const rendered = view(data, state);
   let html = '';
@@ -117,9 +117,9 @@ export async function buildViewHtml(filePath, data = {}, customState = {}) {
   const includeFilePaths = await glob(`${includesDir}/*.js`);
   for await (const includePath of includeFilePaths) {
     const key = basename(includePath, '.js');
-    state.includes[key] = await renderFileTemplate(includePath, data, state);
+    state.includes[key] = await buildView(includePath, data, state);
   }
-  return await renderFileTemplate(`${viewsDir}/${filePath}.js`, data, state);
+  return await buildView(`${viewsDir}/${filePath}.js`, data, state);
 }
 
 /**
