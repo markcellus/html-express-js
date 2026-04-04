@@ -20,7 +20,7 @@ import { stat } from 'fs/promises';
  */
 
 /**
- * @typedef {Record<string, string> & {
+ * @typedef {Record<string, any> & {
  * includes: Record<string, string>
  * }} HTMLExpressViewState
  */
@@ -57,14 +57,14 @@ let notFoundView = `404/index`;
  * Generates the HTML for a view function inside of the passed file.
  *
  * @private
- * @param {string} path - The path to html file
- * @param {object} [data]
- * @param {object} [state] - Page-level attributes
+ * @param {HTMLExpressView} view - The view function
+ * @param {Record<string, any>} [data]
+ * @param {HTMLExpressViewState} [state] - Page-level attributes
  * @returns {Promise<string>} HTML
  */
-async function buildView(path, data, state) {
-  const { view } = await import(path);
-  const rendered = view(data, state);
+async function renderViewHtml(view, data, state) {
+  state = state || { includes: {} };
+  const rendered = view(data || {}, state);
   let html = '';
   for (const chunk of rendered) {
     html += chunk;
@@ -73,29 +73,43 @@ async function buildView(path, data, state) {
 }
 
 /**
+ * Generates the HTML for a view function inside of the passed file.
+ *
+ * @private
+ * @param {string} path - The path to html file
+ * @param {object} [data]
+ * @param {HTMLExpressViewState} [state] - Page-level attributes
+ * @returns {Promise<string>} HTML
+ */
+async function buildView(path, data, state) {
+  const { view } = await import(path);
+  return renderViewHtml(view, data, state);
+}
+
+/**
  * Generates HTML for the provided view and adds all includes to state object.
  *
- * @param {string} filePath - The path to html file
+ * @param {string | HTMLExpressView} view - The view function or path to view file
  * @param {import('express').Request} req - The request to build the state from
  * @param {Record<string, any>} [data] - Data provided to the view
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
-export async function buildStateViewHtml(filePath, req, data = {}) {
+export async function buildStateViewHtml(view, req, data = {}) {
   const requestState = buildRequestState ? await buildRequestState(req) : {};
-  return await buildViewHtml(filePath, data, requestState);
+  return buildViewHtml(view, data, requestState);
 }
 
 /**
  * Renders a JS HTML file and adds all includes to state object.
  *
- * @param {string} filePath - The path to html file
+ * @param {string | HTMLExpressView} view - The path to html file
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {Record<string, any>} [data]
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
-export async function renderView(filePath, req, res, data = {}) {
-  const html = await buildStateViewHtml(filePath, req, data);
+export async function renderView(view, req, res, data = {}) {
+  const html = await buildStateViewHtml(view, req, data);
   res.set('Content-Type', 'text/html');
   res.send(html);
   return html;
@@ -104,14 +118,14 @@ export async function renderView(filePath, req, res, data = {}) {
 /**
  * Renders a JS HTML file and adds all includes to state object.
  *
- * @param {string} filePath - The path to html file
+ * @param {string | HTMLExpressView} view - The view function or path to html file
  * @param {object} data - Data to be made available in view
  * @param {Record<string, any>} [customState]
  * @returns {Promise<string>} HTML with includes available (appended to state)
  */
-export async function buildViewHtml(filePath, data = {}, customState = {}) {
+export async function buildViewHtml(view, data = {}, customState = {}) {
   /**
-   * @type {Record<string, any>}
+   * @type {HTMLExpressViewState}
    */
   const state = { ...customState, includes: {} };
 
@@ -120,7 +134,11 @@ export async function buildViewHtml(filePath, data = {}, customState = {}) {
     const key = basename(includePath, '.js');
     state.includes[key] = await buildView(includePath, data, state);
   }
-  return await buildView(`${viewsDir}/${filePath}.js`, data, state);
+  if (typeof view === 'string') {
+    const filePath = view;
+    return await buildView(`${viewsDir}/${filePath}.js`, data, state);
+  }
+  return await renderViewHtml(view, data, state);
 }
 
 /**
