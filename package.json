@@ -51,23 +51,23 @@
   },
   "homepage": "https://github.com/markcellus/html-express-js#readme",
   "dependencies": {
-    "glob": "^11.0.0"
+    "glob": "^13.0.6"
   },
   "devDependencies": {
-    "@types/chai": "^5.0.0",
-    "@types/express": "^5.0.0",
-    "@types/mocha": "^10.0.6",
+    "@types/chai": "^5.2.3",
+    "@types/express": "^5.0.6",
+    "@types/mocha": "^10.0.10",
     "@types/reload": "^3.2.3",
-    "@types/sinon": "^17.0.3",
-    "chai": "^6.0.1",
-    "chokidar": "^4.0.1",
-    "express": "^5.1.0",
-    "husky": "^9.0.7",
-    "mocha": "^11.0.1",
-    "prettier": "^3.0.3",
-    "release-it": "19.0.4",
-    "reload": "^3.2.0",
-    "sinon": "^21.0.0",
-    "typescript": "^5.4.3"
+    "@types/sinon": "^21.0.1",
+    "chai": "^6.2.2",
+    "chokidar": "^5.0.0",
+    "express": "^5.2.1",
+    "husky": "^9.1.7",
+    "mocha": "^11.7.5",
+    "prettier": "^3.8.1",
+    "release-it": "19.2.4",
+    "reload": "^3.4.3",
+    "sinon": "^21.0.3",
+    "typescript": "^6.0.2"
   }
 }

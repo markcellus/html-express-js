@@ -5,6 +5,7 @@
     "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./src"
+    "outDir": "./src",
+    "rootDir": "./src"
   }
 }
