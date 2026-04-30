@@ -199,7 +199,7 @@ function staticIndexHandler() {
         throw e;
       }
       res.status(404);
-      renderView(notFoundView, req, res);
+      await renderView(notFoundView, req, res);
     }
   };
 }
