@@ -68,6 +68,6 @@
     "release-it": "21.0.2",
     "reload": "^3.4.3",
     "sinon": "^22.1.0",
-    "typescript": "^6.0.2"
+    "typescript": "^7.0.2"
   }
 }
