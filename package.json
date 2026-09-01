@@ -65,7 +65,7 @@
     "husky": "^9.1.7",
     "mocha": "^11.7.5",
     "prettier": "^3.8.1",
-    "release-it": "19.2.4",
+    "release-it": "21.0.2",
     "reload": "^3.4.3",
     "sinon": "^21.0.3",
     "typescript": "^6.0.2"
