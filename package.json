@@ -58,7 +58,7 @@
     "@types/express": "^5.0.6",
     "@types/mocha": "^10.0.10",
     "@types/reload": "^3.2.3",
-    "@types/sinon": "^21.0.1",
+    "@types/sinon": "^22.0.0",
     "chai": "^6.2.2",
     "chokidar": "^5.0.0",
     "express": "^5.2.1",
@@ -67,7 +67,7 @@
     "prettier": "^3.8.1",
     "release-it": "21.0.2",
     "reload": "^3.4.3",
-    "sinon": "^21.0.3",
+    "sinon": "^22.1.0",
     "typescript": "^6.0.2"
   }
 }
