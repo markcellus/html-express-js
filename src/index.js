@@ -219,7 +219,7 @@ export default function (
     viewsDir: '',
   },
 ) {
-  notFoundView = opts.notFoundView || notFoundView;
+  notFoundView = opts.notFoundView || '404/index';
   buildRequestState = opts.buildRequestState;
   viewsDir = opts.viewsDir;
   includesDir = opts.includesDir ? opts.includesDir : `${viewsDir}/includes`;
