@@ -194,7 +194,6 @@ function staticIndexHandler() {
       ? `${pathWithoutPrecedingSlash}/index`
       : 'index';
 
-    res.setHeader('Content-Type', 'text/html');
     try {
       await stat(`${viewsDir}/${path}.js`); // check if file exists
       await renderView(path, req, res);
@@ -202,6 +201,15 @@ function staticIndexHandler() {
       const e = /** @type {Error & {code?: string}} */ (err);
       if (e.code !== 'ENOENT') {
         throw e;
+      }
+      const notFoundViewExists = await stat(
+        `${viewsDir}/${notFoundView}.js`,
+      ).then(
+        () => true,
+        () => false,
+      );
+      if (!notFoundViewExists) {
+        return next();
       }
       res.status(404);
       await renderView(notFoundView, req, res);
