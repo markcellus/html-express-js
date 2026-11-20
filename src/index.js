@@ -27,9 +27,10 @@ import { stat } from 'fs/promises';
 
 /**
  * @template [D=Record<string, any>]
+ * @template [S=Record<string, any>]
  * @callback HTMLExpressView
  * @param {D} data
- * @param {HTMLExpressViewState} state
+ * @param {S & { includes: Record<string, string> }} state
  * @returns {string}
  */
 
@@ -58,14 +59,18 @@ let notFoundView = `404/index`;
  *
  * @private
  * @template D
- * @param {HTMLExpressView<D>} view - The view function
+ * @template S
+ * @param {HTMLExpressView<D, S>} view - The view function
  * @param {D} [data]
  * @param {HTMLExpressViewState} [state] - Page-level attributes
  * @returns {Promise<string>} HTML
  */
 async function renderViewHtml(view, data, state) {
   state = state || { includes: {} };
-  const rendered = view(data || /** @type {D} */ ({}), state);
+  const rendered = view(
+    data || /** @type {D} */ ({}),
+    /** @type {S & { includes: Record<string, string> }} */ (state),
+  );
   let html = '';
   for (const chunk of rendered) {
     html += chunk;
@@ -92,7 +97,8 @@ async function buildView(path, data, state) {
  * Generates HTML for the provided view and adds all includes to state object.
  *
  * @template [D=Record<string, any>]
- * @param {string | HTMLExpressView<D>} view - The view function or path to view file
+ * @template [S=Record<string, any>]
+ * @param {string | HTMLExpressView<D, S>} view - The view function or path to view file
  * @param {import('express').Request} req - The request to build the state from
  * @param {D} [data] - Data provided to the view
  * @returns {Promise<string>} HTML with includes available (appended to state)
@@ -106,7 +112,8 @@ export async function buildStateViewHtml(view, req, data) {
  * Renders a JS HTML file and adds all includes to state object.
  *
  * @template [D=Record<string, any>]
- * @param {string | HTMLExpressView<D>} view - The path to html file
+ * @template [S=Record<string, any>]
+ * @param {string | HTMLExpressView<D, S>} view - The path to html file
  * @param {import('express').Request} req
  * @param {import('express').Response} res
  * @param {D} [data]
@@ -123,7 +130,8 @@ export async function renderView(view, req, res, data) {
  * Renders a JS HTML file and adds all includes to state object.
  *
  * @template [D=Record<string, any>]
- * @param {string | HTMLExpressView<D>} view - The view function or path to html file
+ * @template [S=Record<string, any>]
+ * @param {string | HTMLExpressView<D, S>} view - The view function or path to html file
  * @param {D} [data] - Data to be made available in view
  * @param {Record<string, any>} [customState]
  * @returns {Promise<string>} HTML with includes available (appended to state)
